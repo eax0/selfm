@@ -1,0 +1,19 @@
+{
+  "name": "selfm",
+  "version": "1.0.0",
+  "description": "selfm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eax0/selfm.git"
+  },
+  "author": "eax",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eax0/selfm/issues"
+  },
+  "homepage": "https://github.com/eax0/selfm#readme"
+}
