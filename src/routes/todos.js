@@ -1,14 +1,26 @@
 import express from 'express'
+import {load, sync} from '../core/todos'
 
 const router = express.Router();
 
 router.get('/load', (req, res) => {
-    req.models.todo.findAll({raw: true, order: [['order', 'asc']]}).then(r => {
-        res.send(r);
+    load(req.models.todo).then((todos) => {
+        res.send(todos);    
     });
 });
 
-router.post('/add', (req, res) => {
+router.post('/sync', (req, res) => {
+    const Todo  = req.models.todo;
+    const todos = req.todos;
+    
+    sync(Todo, todos).then(syncedTodos => {
+        res.send({success: true. syncedTodos})
+    }, error => {
+        res.send({success: false, error})
+    });
+});
+
+/*router.post('/add', (req, res) => {
     const Todo = req.models.todo;
     const todo = new Todo(req.body.fields);
 
@@ -19,9 +31,8 @@ router.post('/add', (req, res) => {
 
 router.post('/update', (req, res) => {
     const Todo = req.models.todo;
-    Todo.findById(req.body.id)
-        .then(todo => todo.update(req.body.fields))
-        .then(() => {
+
+    update(Todo, req.body.id, req.body.fields).then(() => {
             res.send({success: true});
         }
     );
@@ -33,9 +44,9 @@ router.post('/remove', (req, res) => {
     Todo.findById(req.body.id)
         .then(todo => todo.destroy())
         .then(() => {
-            res.send({success: true});
-        }
-    );
-});
+                res.send({success: true});
+            }
+        );
+});*/
 
 export default router
