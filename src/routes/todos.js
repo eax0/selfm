@@ -4,16 +4,17 @@ import {load, sync, add, update, remove} from '../core/todos'
 const router = express.Router();
 
 router.get('/load', (req, res) => {
-    load(req.models.todo).then((todos) => {
-        res.send(todos);    
+    load().then((todos) => {
+        res.send(todos);
+    }, err => {
+        res.send(err.message)
     });
 });
 
 router.post('/sync', (req, res) => {
-    const Todo  = req.models.todo;
     const todos = req.todos;
     
-    sync(Todo, todos).then(syncedTodos => {
+    sync(todos).then(syncedTodos => {
         res.send({success: true, syncedTodos})
     }, error => {
         res.send({success: false, error})
@@ -21,26 +22,20 @@ router.post('/sync', (req, res) => {
 });
 
 router.post('/add', (req, res) => {
-    const Todo = req.models.todo;
-
-    add(Todo, req.body.fields).then(success => {
-        res.send({success})
+    add(req.body.fields).then(todo => {
+        res.send(todo)
     });
 });
 
 router.post('/update', (req, res) => {
-    const Todo = req.models.todo;
-
-    update(Todo, req.body.id, req.body.fields).then(() => {
-            res.send({success: true});
+    update(req.body.id, req.body.fields).then((todo) => {
+            res.send(todo);
         }
     );
 });
 
 router.post('/remove', (req, res) => {
-    const Todo = req.models.todo;
-
-    remove(Todo, req.body.id, req.body.fields).then((success) => {
+    remove(req.body.id).then((success) => {
             res.send({success});
         }
     );

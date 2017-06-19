@@ -1,13 +1,18 @@
-import Sequelize from 'sequelize'
-import config from '../config'
-import models from './models'
+import mongoose from 'mongoose'
+import * as autoIncrement from "mongoose-auto-increment";
 
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: config.db.store,
-    logging: false
-});
+mongoose.Promise = global.Promise
+mongoose.connect('mongodb://localhost/test2');
 
-models(sequelize, Sequelize);
+let db = mongoose.connection;
 
-export default sequelize;
+autoIncrement.initialize(db);
+
+db.on('error', console.error.bind(console, 'connection error:'));
+
+db.once('open', () => {
+    console.log('db connected')
+})
+
+db.autoIncrement = autoIncrement;
+global.db = global.db || db;
