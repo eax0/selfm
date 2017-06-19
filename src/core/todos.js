@@ -1,12 +1,10 @@
-export function load(Todo) {
-    return Todo.findAll({
-        raw: true, 
-        order: [['order', 'asc']], 
-        attributes: ['id', 'caption', 'completed', 'order']
-    });
+import Todo from '../models/todo'
+
+export function load() {
+    return Todo.find({}).select('').sort('order')
 }
 
-export function add(Todo, fields) {
+export function add(fields) {
     const todo = new Todo(fields);
 
     return todo.save();
@@ -16,15 +14,16 @@ const validateModel = todo => {
     return todo.id ? Promise.resolve() : Promise.reject(new Error("todo is not saved"));
 }
 
-export function update(Todo, id, fields) {
-    return Todo.findById(id).then(todo => todo.update(fields));
+export function update(id, fields) {
+    
+    return Todo.findByIdAndUpdate(id, fields).then((r) => console.log('update', r));
 }
 
-export function remove(Todo, id) {
-    return Todo.findById(id).then(todo => todo.destroy());
+export function remove(id) {
+    return Todo.findByIdAndRemove(id);
 }
 
-export function sync(Todo, todos) {
+export function sync(todos) {
     if (!todos) {
         return Promise.reject(new Error('empty todos'));
     }
@@ -35,15 +34,15 @@ export function sync(Todo, todos) {
 
     const promises = todos.map((todo) => {
         if (!todo.id) {
-            return add(Todo, todo).then(validateModel);
+            return add(todo).then(validateModel);
         }
 
         if (todo.removed) {
-            return remove(Todo, todo.id);
+            return remove(todo.id);
         }
 
         if (todo.id) {
-            return update(Todo, todo.id, todo).then(validateModel);
+            return update(todo.id, todo).then(validateModel);
         }
     });
 

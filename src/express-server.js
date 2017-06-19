@@ -1,6 +1,6 @@
 import express from 'express'
+import '../src/db';
 import todoRoutes from './routes/todos'
-import db from '../src/db';
 import bodyParser from 'body-parser'
 
 const app = express()
@@ -10,11 +10,11 @@ app.use(bodyParser.urlencoded({extended: false}))
 // parse application/json
 app.use(bodyParser.json())
 
-app.use(function (req, res, next) {
+/*app.use(function (req, res, next) {
     req.db     = db;
     req.models = db.models;
     next();
-})
+})*/
 
 // cross domain enabled
 app.use(function (req, res, next) {
@@ -37,6 +37,5 @@ app.use('/todos/', todoRoutes)
 
 export function startServer() {
     app.listen(3000, function () {
-        console.log('start server');
     });
 }
